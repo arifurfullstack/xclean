@@ -9,15 +9,10 @@ RUN bun install --frozen-lockfile
 # Copy the rest of the source code
 COPY . .
 
-# Declare build-time env vars (Dokploy injects these from Environment settings)
-ARG VITE_SUPABASE_URL
-ARG VITE_SUPABASE_PUBLISHABLE_KEY
-ARG VITE_SUPABASE_PROJECT_ID
-
-# Make them available to the Vite build
-ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
-ENV VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
-ENV VITE_SUPABASE_PROJECT_ID=$VITE_SUPABASE_PROJECT_ID
+# Vite env vars — baked into the JS bundle at build time
+ENV VITE_SUPABASE_URL=https://seybtckozzdcjgdgcsdq.supabase.co
+ENV VITE_SUPABASE_PUBLISHABLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InNleWJ0Y2tvenpkY2pnZGdjc2RxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA0NTM1NzEsImV4cCI6MjA4NjAyOTU3MX0.hnN8fMfTlqyZA3WHDw07t4gvYPpM22I8jDBYYsOU9Bs
+ENV VITE_SUPABASE_PROJECT_ID=seybtckozzdcjgdgcsdq
 
 # Run the build
 RUN bun run build
