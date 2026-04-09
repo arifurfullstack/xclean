@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Lock } from "lucide-react";
 
@@ -7,12 +8,26 @@ interface SubscriptionGateProps {
   hasAccess: boolean;
   message?: string;
   className?: string;
+  returnTo?: string;
 }
 
-const SubscriptionGate = ({ children, hasAccess, message = "Upgrade your plan to unlock this feature", className }: SubscriptionGateProps) => {
+const SubscriptionGate = ({ children, hasAccess, message = "Upgrade your plan to unlock this feature", className, returnTo }: SubscriptionGateProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { user } = useAuth();
 
   if (hasAccess) return <>{children}</>;
+
+  const handleViewPlans = () => {
+    const returnPath = returnTo || location.pathname;
+    if (user) {
+      // Logged-in user: go directly to subscription purchase page with return URL
+      navigate(`/dashboard/subscription?returnTo=${encodeURIComponent(returnPath)}`);
+    } else {
+      // Not logged in: go to auth first, then they'll be redirected to dashboard
+      navigate("/auth");
+    }
+  };
 
   return (
     <div className={`relative ${className || ""}`}>
@@ -22,7 +37,7 @@ const SubscriptionGate = ({ children, hasAccess, message = "Upgrade your plan to
       <div className="absolute inset-0 flex flex-col items-center justify-center bg-background/60 backdrop-blur-sm rounded-lg">
         <Lock className="h-6 w-6 text-muted-foreground mb-2" />
         <p className="text-sm text-muted-foreground text-center mb-3 max-w-[200px]">{message}</p>
-        <Button size="sm" onClick={() => navigate("/pricing")}>
+        <Button size="sm" onClick={handleViewPlans}>
           View Plans
         </Button>
       </div>

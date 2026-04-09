@@ -30,12 +30,12 @@ export interface PaymentMethodOption {
 }
 
 const DEFAULT_SETTINGS: PaymentGatewaySettings = {
-  stripe_enabled: true,
+  stripe_enabled: false,
   stripe_mode: "test",
-  cash_enabled: true,
+  cash_enabled: false,
   cash_instructions: "Please pay the cleaner in cash after the service is completed.",
   cash_confirmation_required: true,
-  bank_enabled: true,
+  bank_enabled: false,
   bank_name: "",
   bank_account_name: "",
   bank_account_number: "",
@@ -64,10 +64,26 @@ export const usePaymentSettings = () => {
       }
 
       try {
-        // In a real implementation, these would come from the database
-        // For now, use defaults since payment columns don't exist yet
+        const { data, error: fetchError } = await supabase
+          .from("platform_settings")
+          .select("stripe_enabled, stripe_mode, cash_enabled, cash_instructions, cash_confirmation_required, bank_enabled, bank_name, bank_account_name, bank_account_number, bank_routing_number, bank_swift_code, bank_instructions")
+          .single();
+
+        if (fetchError) throw fetchError;
+
         const paymentSettings: PaymentGatewaySettings = {
-          ...DEFAULT_SETTINGS,
+          stripe_enabled: data?.stripe_enabled ?? DEFAULT_SETTINGS.stripe_enabled,
+          stripe_mode: (data?.stripe_mode as "test" | "live") ?? DEFAULT_SETTINGS.stripe_mode,
+          cash_enabled: data?.cash_enabled ?? DEFAULT_SETTINGS.cash_enabled,
+          cash_instructions: data?.cash_instructions ?? DEFAULT_SETTINGS.cash_instructions,
+          cash_confirmation_required: data?.cash_confirmation_required ?? DEFAULT_SETTINGS.cash_confirmation_required,
+          bank_enabled: data?.bank_enabled ?? DEFAULT_SETTINGS.bank_enabled,
+          bank_name: data?.bank_name ?? DEFAULT_SETTINGS.bank_name,
+          bank_account_name: data?.bank_account_name ?? DEFAULT_SETTINGS.bank_account_name,
+          bank_account_number: data?.bank_account_number ?? DEFAULT_SETTINGS.bank_account_number,
+          bank_routing_number: data?.bank_routing_number ?? DEFAULT_SETTINGS.bank_routing_number,
+          bank_swift_code: data?.bank_swift_code ?? DEFAULT_SETTINGS.bank_swift_code,
+          bank_instructions: data?.bank_instructions ?? DEFAULT_SETTINGS.bank_instructions,
         };
         
         cachedPaymentSettings = paymentSettings;

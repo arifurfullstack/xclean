@@ -9,6 +9,7 @@ import { useSubscriptionPlans } from "@/hooks/useSubscriptionPlans";
 import { usePlatformSettings } from "@/hooks/usePlatformSettings";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { SubscriptionPlan } from "@/types/subscription";
+import { useAuth } from "@/contexts/AuthContext";
 
 const freePlan = {
   name: "Free",
@@ -17,12 +18,25 @@ const freePlan = {
   cta: "Get Started",
 };
 
-const PlanCard = ({ plan, formatCurrency, highlighted, navigate }: {
+const PlanCard = ({ plan, formatCurrency, highlighted, navigate, isLoggedIn, userRole }: {
   plan: SubscriptionPlan;
   formatCurrency: (n: number) => string;
   highlighted: boolean;
   navigate: (path: string) => void;
-}) => (
+  isLoggedIn: boolean;
+  userRole: string | null;
+}) => {
+  const handleSubscribe = () => {
+    if (isLoggedIn) {
+      // Send to the appropriate subscription page based on role
+      const subPath = userRole === 'cleaner' ? '/cleaner/subscription' : '/dashboard/subscription';
+      navigate(subPath);
+    } else {
+      navigate('/auth');
+    }
+  };
+
+  return (
   <div
     className={`rounded-2xl border p-8 flex flex-col ${
       highlighted
@@ -74,15 +88,17 @@ const PlanCard = ({ plan, formatCurrency, highlighted, navigate }: {
     <Button
       variant={highlighted ? "default" : "outline"}
       className="w-full"
-      onClick={() => navigate("/auth")}
+      onClick={handleSubscribe}
     >
       Subscribe
     </Button>
   </div>
-);
+  );
+};
 
 const Pricing = () => {
   const navigate = useNavigate();
+  const { user, role } = useAuth();
   const { plans: customerPlans, loading: customerLoading } = useSubscriptionPlans("customer");
   const { plans: cleanerPlans, loading: cleanerLoading } = useSubscriptionPlans("cleaner");
   const { formatCurrency, loading: settingsLoading } = usePlatformSettings();
@@ -120,7 +136,7 @@ const Pricing = () => {
               </li>
             ))}
           </ul>
-          <Button variant="outline" className="w-full" onClick={() => navigate("/auth")}>
+          <Button variant="outline" className="w-full" onClick={() => navigate(user ? "/dashboard" : "/auth")}>
             {freePlan.cta}
           </Button>
         </div>
@@ -132,6 +148,8 @@ const Pricing = () => {
             formatCurrency={formatCurrency}
             highlighted={plan.tier === "pro"}
             navigate={navigate}
+            isLoggedIn={!!user}
+            userRole={role}
           />
         ))}
       </div>

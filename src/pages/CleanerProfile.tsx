@@ -209,7 +209,7 @@ const CleanerProfile = () => {
   const { user } = useAuth();
   const cleaner = mockCleanerData; // In real app, fetch by id
   const [startingChat, setStartingChat] = useState(false);
-  const { canMessage, canViewContact, canAccessCalendar } = useFinderAccess();
+  const { canMessage, canViewContact, canAccessCalendar, hasSubscription } = useFinderAccess();
 
   // Fetch the cleaner profile's user_id so we can start a conversation
   const { data: cleanerUserId } = useQuery({
@@ -520,6 +520,7 @@ const CleanerProfile = () => {
 
               {/* Services Tab */}
               <TabsContent value="services" className="mt-6">
+                <SubscriptionGate hasAccess={hasSubscription} message="Subscribe to view and book services from this provider">
                 {loadingListings ? (
                   <div className="flex items-center justify-center h-40">
                     <Loader2 className="h-6 w-6 animate-spin text-primary" />
@@ -602,6 +603,7 @@ const CleanerProfile = () => {
                     </CardContent>
                   </Card>
                 )}
+                </SubscriptionGate>
               </TabsContent>
 
               {/* Gallery Tab */}

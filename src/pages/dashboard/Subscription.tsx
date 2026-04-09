@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,6 +13,9 @@ import { Crown, Check, Loader2, AlertCircle, CreditCard, Building, Sparkles } fr
 import { format } from "date-fns";
 
 const Subscription = () => {
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const returnTo = searchParams.get('returnTo');
   const { plans, loading: plansLoading } = useSubscriptionPlans('customer');
   const { subscription, loading: subLoading, subscribeToPlan, cancelSubscription, hasActiveSubscription, getBookingDiscount } = useUserSubscription();
   const { formatCurrency } = usePlatformSettings();
@@ -33,6 +37,10 @@ const Subscription = () => {
       await subscribeToPlan(selectedPlan.id, paymentMethod);
       setShowPaymentDialog(false);
       setSelectedPlan(null);
+      // Redirect back to the page the user came from (e.g. cleaner profile)
+      if (returnTo) {
+        navigate(decodeURIComponent(returnTo));
+      }
     } finally {
       setProcessing(false);
     }

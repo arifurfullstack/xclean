@@ -107,11 +107,30 @@ const AdminPaymentGateway = () => {
       if (error) throw error;
 
       if (data) {
-        // Map from platform_settings to payment settings
-        // For now, use defaults since payment columns don't exist yet
         const paymentSettings: PaymentSettings = {
-          ...DEFAULT_SETTINGS,
-          // These would be populated from actual database columns when added
+          stripe_enabled: data.stripe_enabled ?? DEFAULT_SETTINGS.stripe_enabled,
+          stripe_mode: (data.stripe_mode as "test" | "live") ?? DEFAULT_SETTINGS.stripe_mode,
+          stripe_publishable_key: data.stripe_publishable_key ?? DEFAULT_SETTINGS.stripe_publishable_key,
+          stripe_webhook_secret: data.stripe_webhook_secret ?? DEFAULT_SETTINGS.stripe_webhook_secret,
+          cash_enabled: data.cash_enabled ?? DEFAULT_SETTINGS.cash_enabled,
+          cash_instructions: data.cash_instructions ?? DEFAULT_SETTINGS.cash_instructions,
+          cash_confirmation_required: data.cash_confirmation_required ?? DEFAULT_SETTINGS.cash_confirmation_required,
+          bank_enabled: data.bank_enabled ?? DEFAULT_SETTINGS.bank_enabled,
+          bank_name: data.bank_name ?? DEFAULT_SETTINGS.bank_name,
+          bank_account_name: data.bank_account_name ?? DEFAULT_SETTINGS.bank_account_name,
+          bank_account_number: data.bank_account_number ?? DEFAULT_SETTINGS.bank_account_number,
+          bank_routing_number: data.bank_routing_number ?? DEFAULT_SETTINGS.bank_routing_number,
+          bank_swift_code: data.bank_swift_code ?? DEFAULT_SETTINGS.bank_swift_code,
+          bank_instructions: data.bank_instructions ?? DEFAULT_SETTINGS.bank_instructions,
+          auto_payouts_enabled: data.auto_payouts_enabled ?? DEFAULT_SETTINGS.auto_payouts_enabled,
+          payout_schedule: (data.payout_schedule as "daily" | "weekly" | "biweekly" | "monthly") ?? DEFAULT_SETTINGS.payout_schedule,
+          minimum_payout_amount: Number(data.minimum_payout_amount) ?? DEFAULT_SETTINGS.minimum_payout_amount,
+          payout_delay_days: data.payout_delay_days ?? DEFAULT_SETTINGS.payout_delay_days,
+          capture_method: (data.capture_method as "automatic" | "manual") ?? DEFAULT_SETTINGS.capture_method,
+          allow_refunds: data.allow_refunds ?? DEFAULT_SETTINGS.allow_refunds,
+          refund_window_days: data.refund_window_days ?? DEFAULT_SETTINGS.refund_window_days,
+          pass_processing_fee_to_customer: data.pass_processing_fee_to_customer ?? DEFAULT_SETTINGS.pass_processing_fee_to_customer,
+          processing_fee_percentage: Number(data.processing_fee_percentage) ?? DEFAULT_SETTINGS.processing_fee_percentage,
         };
         setSettings(paymentSettings);
         setOriginalSettings(paymentSettings);
@@ -131,10 +150,38 @@ const AdminPaymentGateway = () => {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // In a real implementation, this would save to the database
-      // For now, just simulate a save
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const { error } = await supabase
+        .from("platform_settings")
+        .update({
+          stripe_enabled: settings.stripe_enabled,
+          stripe_mode: settings.stripe_mode,
+          stripe_publishable_key: settings.stripe_publishable_key,
+          stripe_webhook_secret: settings.stripe_webhook_secret,
+          cash_enabled: settings.cash_enabled,
+          cash_instructions: settings.cash_instructions,
+          cash_confirmation_required: settings.cash_confirmation_required,
+          bank_enabled: settings.bank_enabled,
+          bank_name: settings.bank_name,
+          bank_account_name: settings.bank_account_name,
+          bank_account_number: settings.bank_account_number,
+          bank_routing_number: settings.bank_routing_number,
+          bank_swift_code: settings.bank_swift_code,
+          bank_instructions: settings.bank_instructions,
+          auto_payouts_enabled: settings.auto_payouts_enabled,
+          payout_schedule: settings.payout_schedule,
+          minimum_payout_amount: settings.minimum_payout_amount,
+          payout_delay_days: settings.payout_delay_days,
+          capture_method: settings.capture_method,
+          allow_refunds: settings.allow_refunds,
+          refund_window_days: settings.refund_window_days,
+          pass_processing_fee_to_customer: settings.pass_processing_fee_to_customer,
+          processing_fee_percentage: settings.processing_fee_percentage,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", (await supabase.from("platform_settings").select("id").single()).data?.id ?? "");
+
+      if (error) throw error;
+
       setOriginalSettings(settings);
       toast({
         title: "Settings saved",

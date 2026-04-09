@@ -573,8 +573,21 @@ export type Database = {
         Row: {
           advance_booking_days: number
           allow_instant_booking: boolean
+          allow_refunds: boolean
           auto_approve_cleaners: boolean
+          auto_payouts_enabled: boolean
+          bank_account_name: string
+          bank_account_number: string
+          bank_enabled: boolean
+          bank_instructions: string
+          bank_name: string
+          bank_routing_number: string
+          bank_swift_code: string
           cancellation_window_hours: number
+          capture_method: string
+          cash_confirmation_required: boolean
+          cash_enabled: boolean
+          cash_instructions: string
           default_currency: string
           id: string
           maintenance_mode: boolean
@@ -582,16 +595,26 @@ export type Database = {
           max_hourly_rate: number
           min_booking_hours: number
           min_hourly_rate: number
+          minimum_payout_amount: number
           notify_cleaner_applications: boolean
           notify_new_bookings: boolean
           notify_new_users: boolean
+          pass_processing_fee_to_customer: boolean
+          payout_delay_days: number
+          payout_schedule: string
           platform_commission_rate: number
           platform_name: string
           privacy_url: string | null
+          processing_fee_percentage: number
+          refund_window_days: number
           require_2fa_admins: boolean
           require_cleaner_verification: boolean
           require_email_verification: boolean
           site_tagline: string | null
+          stripe_enabled: boolean
+          stripe_mode: string
+          stripe_publishable_key: string
+          stripe_webhook_secret: string
           support_email: string | null
           terms_url: string | null
           updated_at: string
@@ -600,8 +623,21 @@ export type Database = {
         Insert: {
           advance_booking_days?: number
           allow_instant_booking?: boolean
+          allow_refunds?: boolean
           auto_approve_cleaners?: boolean
+          auto_payouts_enabled?: boolean
+          bank_account_name?: string
+          bank_account_number?: string
+          bank_enabled?: boolean
+          bank_instructions?: string
+          bank_name?: string
+          bank_routing_number?: string
+          bank_swift_code?: string
           cancellation_window_hours?: number
+          capture_method?: string
+          cash_confirmation_required?: boolean
+          cash_enabled?: boolean
+          cash_instructions?: string
           default_currency?: string
           id?: string
           maintenance_mode?: boolean
@@ -609,16 +645,26 @@ export type Database = {
           max_hourly_rate?: number
           min_booking_hours?: number
           min_hourly_rate?: number
+          minimum_payout_amount?: number
           notify_cleaner_applications?: boolean
           notify_new_bookings?: boolean
           notify_new_users?: boolean
+          pass_processing_fee_to_customer?: boolean
+          payout_delay_days?: number
+          payout_schedule?: string
           platform_commission_rate?: number
           platform_name?: string
           privacy_url?: string | null
+          processing_fee_percentage?: number
+          refund_window_days?: number
           require_2fa_admins?: boolean
           require_cleaner_verification?: boolean
           require_email_verification?: boolean
           site_tagline?: string | null
+          stripe_enabled?: boolean
+          stripe_mode?: string
+          stripe_publishable_key?: string
+          stripe_webhook_secret?: string
           support_email?: string | null
           terms_url?: string | null
           updated_at?: string
@@ -627,8 +673,21 @@ export type Database = {
         Update: {
           advance_booking_days?: number
           allow_instant_booking?: boolean
+          allow_refunds?: boolean
           auto_approve_cleaners?: boolean
+          auto_payouts_enabled?: boolean
+          bank_account_name?: string
+          bank_account_number?: string
+          bank_enabled?: boolean
+          bank_instructions?: string
+          bank_name?: string
+          bank_routing_number?: string
+          bank_swift_code?: string
           cancellation_window_hours?: number
+          capture_method?: string
+          cash_confirmation_required?: boolean
+          cash_enabled?: boolean
+          cash_instructions?: string
           default_currency?: string
           id?: string
           maintenance_mode?: boolean
@@ -636,16 +695,26 @@ export type Database = {
           max_hourly_rate?: number
           min_booking_hours?: number
           min_hourly_rate?: number
+          minimum_payout_amount?: number
           notify_cleaner_applications?: boolean
           notify_new_bookings?: boolean
           notify_new_users?: boolean
+          pass_processing_fee_to_customer?: boolean
+          payout_delay_days?: number
+          payout_schedule?: string
           platform_commission_rate?: number
           platform_name?: string
           privacy_url?: string | null
+          processing_fee_percentage?: number
+          refund_window_days?: number
           require_2fa_admins?: boolean
           require_cleaner_verification?: boolean
           require_email_verification?: boolean
           site_tagline?: string | null
+          stripe_enabled?: boolean
+          stripe_mode?: string
+          stripe_publishable_key?: string
+          stripe_webhook_secret?: string
           support_email?: string | null
           terms_url?: string | null
           updated_at?: string
